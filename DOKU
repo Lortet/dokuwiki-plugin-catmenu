@@ -1,0 +1,78 @@
+====== CatMenu Plugin ======
+
+---- plugin ----
+description: Affiche un menu arborescent de namespace
+author     : Valentin LORTET
+email      : contact@lortet.fr
+type       : Syntax, Action
+lastupdate : 2026-03-09
+compatible : Librarian
+depends    :
+conflicts  :
+similar    :
+tags       : Navigation, Menu, Namespace, ProseMirror
+
+downloadurl:
+bugtracker :
+sourcerepo :
+donationurl:
+screenshot_img :
+----
+
+===== Installation =====
+
+Installer le plugin depuis le [[fr:plugin:extension|Gestionnaire d'extensions]].
+
+===== Description =====
+
+Le plugin **catmenu** permet :
+  * d'afficher un menu arborescent (pages + sous-dossiers) pour un namespace ;
+  * d'ouvrir automatiquement la branche correspondant à la page courante ;
+  * de gérer les pages d'accueil de namespace (''$conf['start']'') ;
+  * de proposer un menu contextuel d'actions (selon permissions).
+
+===== Syntaxe =====
+
+Utilisation :
+  * ''{{catmenu>namespace}}''
+
+Exemples :
+  * ''{{catmenu>.}}'' (namespace courant)
+  * ''{{catmenu>wiki}}''
+  * ''{{catmenu>docs:projet}}''
+
+===== Paramètres =====
+
+^ Nom ^ Description ^ Valeur par défaut ^
+| skip_file | Regex pour ignorer des IDs de page. | '''' |
+| skip_page_without_title | Ignorer les pages sans titre H1. | ''true'' |
+| show_in_editor_menu | Afficher le bouton d'insertion dans l'éditeur. | ''true'' |
+
+===== Compatibilité =====
+
+  * Compatible avec [[https://www.dokuwiki.org/plugin:prosemirror|ProseMirror]]
+  * Utilise [[https://www.dokuwiki.org/plugin:pagesicon|pagesicon]] pour afficher les icônes quand disponible.
+
+===== Icônes (pagesicon) =====
+
+Si le helper ''pagesicon'' est installé :
+  * récupération des icônes via l'API helper ;
+  * fallback possible vers l'image par défaut ''pagesicon'' sur versions récentes ;
+  * fallback legacy conservé pour anciennes signatures helper.
+
+Si aucune icône n'est trouvée, l'entrée est affichée sans image.
+
+===== Menu contextuel =====
+
+Clic droit sur un item du menu :
+  * créer une nouvelle page (si autorisé) ;
+  * recharger le cache (''purge=true'') ;
+  * ouvrir le gestionnaire de médias ;
+  * ouvrir la gestion d'icône (''pagesicon'') si disponible ;
+  * copier l'URL.
+
+===== Permissions =====
+
+Le rendu respecte les ACL DokuWiki :
+  * lecture minimale pour afficher un item ;
+  * actions contextuelles limitées selon les droits (create/edit/upload).

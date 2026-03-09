@@ -1,0 +1,57 @@
+# CatMenu
+
+`catmenu` affiche un menu arborescent (pages + sous-dossiers) pour un namespace DokuWiki.
+
+## Syntaxe
+
+```text
+{{catmenu>namespace}}
+```
+
+Exemples :
+
+```text
+{{catmenu>.}}
+{{catmenu>wiki}}
+{{catmenu>docs:projet}}
+```
+
+- `.` : utilise le namespace courant.
+- `namespace` : utilise le namespace indiqué.
+
+## Comportement
+
+- liste les pages et sous-dossiers accessibles en lecture.
+- ouvre automatiquement la branche correspondant à la page courante.
+- gère les pages d'accueil de namespace (`$conf['start']`).
+- masque les pages sans titre H1 si `skip_page_without_title` est activé.
+
+## Configuration
+
+Dans le gestionnaire de configuration :
+
+- `skip_file` : regex pour ignorer certains IDs de page.
+- `skip_page_without_title` : ignorer les pages sans H1.
+- `show_in_editor_menu` : afficher le bouton d'insertion dans l'éditeur.
+
+## Compatibilité
+
+- Compatible avec le plugin [ProseMirror](https://www.dokuwiki.org/plugin:prosemirror)
+- `catmenu` utilise le plugin [pagesicon](https://www.dokuwiki.org/plugin:pagesicon) pour afficher les icônes, si `pagesicon` est disponible.
+
+## Menu contextuel
+
+Clic droit sur un item :
+
+- créer une nouvelle page (selon droits),
+- recharger le cache (`purge=true`),
+- ouvrir le gestionnaire de médias,
+- ouvrir la gestion d'icône (`pagesicon`) si disponible,
+- copier l'URL.
+
+## Permissions
+
+Le rendu respecte les ACL DokuWiki :
+
+- lecture minimale pour afficher un item,
+- actions contextuelles limitées selon les droits (create/edit/upload).

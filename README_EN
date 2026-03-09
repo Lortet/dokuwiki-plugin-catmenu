@@ -1,0 +1,57 @@
+# CatMenu
+
+`catmenu` displays a tree menu (pages + subfolders) for a DokuWiki namespace.
+
+## Syntax
+
+```text
+{{catmenu>namespace}}
+```
+
+Examples:
+
+```text
+{{catmenu>.}}
+{{catmenu>wiki}}
+{{catmenu>docs:projet}}
+```
+
+- `.`: uses the current namespace.
+- `namespace`: uses the specified namespace.
+
+## Behavior
+
+- lists pages and subfolders readable by the current user.
+- automatically opens the branch matching the current page.
+- handles namespace start pages (`$conf['start']`).
+- hides pages without an H1 title when `skip_page_without_title` is enabled.
+
+## Configuration
+
+In the Configuration Manager:
+
+- `skip_file`: regex used to ignore matching page IDs.
+- `skip_page_without_title`: ignore pages without H1.
+- `show_in_editor_menu`: show the insert button in the editor.
+
+## Compatibility
+
+- Compatible with [ProseMirror](https://www.dokuwiki.org/plugin:prosemirror).
+- `catmenu` uses [pagesicon](https://www.dokuwiki.org/plugin:pagesicon) to display icons when `pagesicon` is available.
+
+## Context Menu
+
+Right-click on an item to:
+
+- create a new page (depending on permissions),
+- reload cache (`purge=true`),
+- open the media manager,
+- open icon management (`pagesicon`) when available,
+- copy the URL.
+
+## Permissions
+
+Rendering follows DokuWiki ACL rules:
+
+- read permission is required to show an item,
+- context actions are limited by permissions (create/edit/upload).

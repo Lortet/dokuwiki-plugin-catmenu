@@ -1,0 +1,153 @@
+.catmenu {
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+}
+
+.catmenu > .menu-item:first-of-type {
+  margin-top: 0px;
+}
+.catmenu .menu-item {
+  box-sizing: border-box;
+  margin-top: 5px;
+}
+.catmenu .menu-item a {
+  color: inherit;
+  text-decoration: none;
+}
+.catmenu .menu-item .header a,
+.catmenu .menu-item .header a:visited,
+.catmenu .menu-item .header a:hover,
+.catmenu .menu-item .header a:active {
+  color: inherit !important;
+}
+.catmenu > .menu-item > .header {
+  background-color: #4fb9a6;
+  padding: 5px;
+  transition: background .5s;
+  color: #fff;
+  border-radius: 7px;
+}
+.catmenu .header.current {
+  font-weight: bold;
+}
+.catmenu > .menu-item > .submenu {
+  padding-left: 5px;
+  width: 800px;
+}
+.catmenu > .menu-item > .header:hover {
+  background-color: #5ec9b3;
+}
+.catmenu .menu-item .header {
+  text-align: justify;
+  padding-right: 5px;
+}
+.catmenu .menu-item .header * {
+  vertical-align: middle;
+}
+.catmenu .menu-item .header a:hover {
+  text-decoration: underline;
+}
+
+.catmenu .menu-item .header {
+  padding-left: 14px;
+}
+.catmenu .menu-item .header.arrow {
+  cursor: pointer;
+  padding-left: 0;
+}
+.catmenu > .menu-item > .header.arrow {
+  padding-left: 5px;
+}
+.catmenu .menu-item .header.arrow::before {
+  margin-right: 5px;
+  content: "▶";
+  display: inline-block;
+  transition: transform 0.2s;
+}
+.catmenu .menu-item.open > .header.arrow::before {
+  transform: rotate(90deg);
+}
+
+.catmenu .menu-item .icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}
+
+.catmenu .submenu {
+  max-height: 0;
+  padding-left: 15px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: max-height 0.2s;
+}
+.catmenu .submenu .icon {
+  display: none;
+}
+.catmenu .open > .header .icon,
+.catmenu .open > .submenu > .menu-item > .header > .icon {
+  display: inline;
+}
+.catmenu .open > .submenu {
+  max-height: none;
+}
+.catmenu > .submenu.open {
+  padding-bottom: 5px;
+  border-bottom: 1px solid #000;
+}
+
+#catmenu_contextMenu {
+  position: fixed;
+  display: none;
+  background: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  padding: 2px;
+  min-width: 150px;
+  max-width: 30%;
+  border-radius: 5px;
+  box-shadow: #888 3px 3px 7px;
+}
+#catmenu_contextMenu p {
+  text-align: center;
+  margin: 0;
+  padding: 0 5px;
+}
+#catmenu_contextMenu .button {
+  display: block;
+  color: inherit;
+  cursor: pointer;
+  padding: 2px 0;
+  border-radius: 3px;
+  text-decoration: none;
+}
+#catmenu_contextMenu .button:hover {
+  background-color: #e1e1e1;
+}
+
+.pm_catmenu_node {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: #f6f8fa;
+  color: #1f2328;
+  font-family: sans-serif;
+  cursor: pointer;
+}
+
+.pm_catmenu_block {
+  display: flex;
+  width: 100%;
+  margin: 6px 0;
+}
+
+.pm_catmenu_icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}

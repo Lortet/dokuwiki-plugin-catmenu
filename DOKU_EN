@@ -1,0 +1,78 @@
+====== CatMenu Plugin ======
+
+---- plugin ----
+description: Displays a namespace tree menu
+author     : Valentin LORTET
+email      : contact@lortet.fr
+type       : Syntax, Action
+lastupdate : 2026-03-09
+compatible : Librarian
+depends    :
+conflicts  :
+similar    :
+tags       : Navigation, Menu, Namespace, ProseMirror
+
+downloadurl:
+bugtracker :
+sourcerepo :
+donationurl:
+screenshot_img :
+----
+
+===== Installation =====
+
+Install the plugin from the [[plugin:extension|Extension Manager]].
+
+===== Description =====
+
+The **catmenu** plugin allows you to:
+  * display a tree menu (pages + subfolders) for a namespace;
+  * automatically open the branch matching the current page;
+  * handle namespace start pages (''$conf['start']'');
+  * provide a context menu with actions (depending on permissions).
+
+===== Syntax =====
+
+Usage:
+  * ''{{catmenu>namespace}}''
+
+Examples:
+  * ''{{catmenu>.}}'' (current namespace)
+  * ''{{catmenu>wiki}}''
+  * ''{{catmenu>docs:project}}''
+
+===== Settings =====
+
+^ Name ^ Description ^ Default value ^
+| skip_file | Regex used to ignore page IDs. | '''' |
+| skip_page_without_title | Ignore pages without an H1 title. | ''true'' |
+| show_in_editor_menu | Show the insert button in the editor. | ''true'' |
+
+===== Compatibility =====
+
+  * Compatible with [[https://www.dokuwiki.org/plugin:prosemirror|ProseMirror]]
+  * Uses [[https://www.dokuwiki.org/plugin:pagesicon|pagesicon]] to display icons when available.
+
+===== Icons (pagesicon) =====
+
+If the ''pagesicon'' helper is installed:
+  * icons are retrieved through the helper API;
+  * default ''pagesicon'' image fallback is available on recent versions;
+  * legacy fallback is kept for older helper signatures.
+
+If no icon is found, the item is rendered without an image.
+
+===== Context menu =====
+
+Right-click on a menu item:
+  * create a new page (if allowed);
+  * reload cache (''purge=true'');
+  * open media manager;
+  * open icon management (''pagesicon'') when available;
+  * copy URL.
+
+===== Permissions =====
+
+Rendering follows DokuWiki ACL rules:
+  * read permission is required to show an item;
+  * context actions are limited by permissions (create/edit/upload).
