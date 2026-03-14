@@ -13,7 +13,7 @@ Examples:
 ```text
 {{catmenu>.}}
 {{catmenu>wiki}}
-{{catmenu>docs:projet}}
+{{catmenu>docs:project}}
 ```
 
 - `.`: uses the current namespace.
@@ -30,18 +30,21 @@ Examples:
 
 In the Configuration Manager:
 
-- `skip_file`: regex used to ignore matching page IDs.
+- `skip_file`: regex used to ignore matching page IDs. Also accepts the special value `@hidepages` to automatically reuse DokuWiki's built-in `hidepages` setting.
 - `skip_page_without_title`: ignore pages without H1.
 - `show_in_editor_menu`: show the insert button in the editor.
+- `context_menu_items`: checkboxes to choose which actions appear in the right-click context menu. All enabled by default.
+- `footer_content`: multiline DokuWiki markup injected at the bottom of every menu (links, notes, etc.). Empty by default.
 
 ## Compatibility
 
 - Compatible with [ProseMirror](https://www.dokuwiki.org/plugin:prosemirror).
-- `catmenu` uses [pagesicon](https://www.dokuwiki.org/plugin:pagesicon) to display icons when `pagesicon` is available.
+- `catmenu` uses [pagesicon](https://www.dokuwiki.org/plugin:pagesicon) to display icons when available. The "Manage icon" context menu action only appears if pagesicon is installed.
+- Compatible with the `newpagefill` plugin for page creation. When available, `catmenu` uses its creation helper.
 
 ## Context Menu
 
-Right-click on an item to:
+Right-click on an item (each action is individually configurable):
 
 - create a new page (depending on permissions),
 - reload cache (`purge=true`),

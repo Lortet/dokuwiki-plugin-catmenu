@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin catmenu
- * Affiche les pages d’un namespace donné
+ * Affiche les pages d'un namespace donné sous forme de menu hiérarchique.
  * Auteur: Lortetv
  */
- 
+
 use dokuwiki\Extension\SyntaxPlugin;
 use dokuwiki\File\PageResolver;
 use dokuwiki\Ui\Index;
@@ -13,304 +13,317 @@ class syntax_plugin_catmenu_catmenu extends SyntaxPlugin {
     /** @var helper_plugin_pagesicon|null|false */
     private $pagesiconHelper = false;
 
+    /** @var helper_plugin_catmenu_namespace|null */
+    private $nsHelper = null;
+
+    /**
+     * Retourne le helper namespace (chargé en lazy).
+     */
+    private function getNsHelper(): helper_plugin_catmenu_namespace
+    {
+        if ($this->nsHelper === null) {
+            $this->nsHelper = $this->loadHelper('catmenu_namespace');
+        }
+        return $this->nsHelper;
+    }
+
     public function getType() {
         return 'substition'; // substitution = remplacer la balise par du contenu
     }
-	
+
     public function getPType() {
-        return 'block'; 
+        return 'block';
     }
-	
+
     public function getSort() { // priorité du plugin par rapport à d'autres
         return 15;
     }
 
     /**
-	 * Reconnaît la syntaxe {{catmenu>[namespace]}}
+     * Reconnaît la syntaxe {{catmenu>[namespace]}}
      */
-    public function connectTo($mode) { // reconnait la syntaxe utilisé par l'utilisateur
+    public function connectTo($mode) {
         $this->Lexer->addSpecialPattern('{{catmenu>.*?}}', $mode, 'plugin_catmenu_catmenu');
     }
 
     /**
-     * Nettoie  {{catmenu>[namespace]}}
+     * Nettoie {{catmenu>[namespace]}} et extrait le namespace.
      */
     public function handle($match, $state, $pos, Doku_Handler $handler) {
-        $namespace = trim(substr($match, 10, -2)); // retirer {{visualindex>, }} et les espaces
+        $namespace = trim(substr($match, 10, -2)); // retirer {{catmenu> et }}
         return ['namespace' => $namespace];
     }
 
     public function render($mode, Doku_Renderer $renderer, $data) {
         if ($mode !== 'xhtml') return false;
 
-		global $ID;
-		global $conf;
+        global $ID;
+        global $conf;
 
-		$random = uniqid();
-		
-		if($data['namespace'] === '.') { // Récupération du namespace courant
-			if(!is_dir($this->namespaceDir($ID))) {
-				$pageNamespaceInfo = $this->getPageNamespaceInfo($ID);
-				if($this->isHomepage($pageNamespaceInfo['pageID'], $pageNamespaceInfo['parentID'])) {
-					$namespace = $pageNamespaceInfo['parentNamespace'];
-				}
-			}
-			
-			if(!isset($namespace)) {
-				$namespace = $ID;
-			}
-		}
-		else {
-			$namespace = cleanID($data['namespace']);
-		}
-		
-		$pages = $this->getPagesAndSubfoldersItems($namespace);
-		if($pages === false) {
-			$renderer->doc .= '<div>' . hsc($this->getLang('namespace_not_found')) . '</div>';
-			return true;
-		}
-		
-		$renderer->doc .= '<div id="catmenu_' . $random . '" class="catmenu" style=""></div>';
-		$renderer->doc .= "<script>
-			let catmenuconf_" . $random . " = { userewrite: '" . $conf['userewrite'] . "', start: '" . $conf['start'] . "' };
-			let catmenuobj_" . $random . " = JSON.parse(`" . htmlspecialchars_decode(json_encode($pages)) . "`);
-			(function initCatmenu_" . $random . "() {
-				const target = document.getElementById('catmenu_" . $random . "');
-				if (!target) return;
-				const renderOnce = function () {
-					if (target.dataset.catmenuRendered === '1') return;
-					if (typeof window.catmenu_generateSectionMenu !== 'function') return;
-					target.dataset.catmenuRendered = '1';
-					target.innerHTML = '';
-					window.catmenu_generateSectionMenu(catmenuconf_" . $random . ", catmenuobj_" . $random . ", target);
-				};
-				if (typeof window.catmenu_generateSectionMenu === 'function') {
-					renderOnce();
-					return;
-				}
+        $random = uniqid();
+        $nsHelper = $this->getNsHelper();
 
-				// In edit/preview pages, plugin scripts can load after inline rendering.
-				document.addEventListener('catmenu:ready', function onReady() {
-					renderOnce();
-				}, { once: true });
+        if ($data['namespace'] === '.') { // Résolution du namespace courant
+            $namespace = $nsHelper->getCurrentNamespace($ID);
+        } else {
+            $namespace = cleanID($data['namespace']);
+        }
 
-				setTimeout(function retryCatmenu_" . $random . "() {
-					renderOnce();
-				}, 0);
-			})();
-		</script>";
+        $pages = $this->getPagesAndSubfoldersItems($namespace);
+        if ($pages === false) {
+            $renderer->doc .= '<div>' . hsc($this->getLang('namespace_not_found')) . '</div>';
+            return true;
+        }
 
-		return true;
-	}
+        $renderer->doc .= '<div id="catmenu_' . $random . '" class="catmenu" style=""></div>';
+        $renderer->doc .= "<script>
+            let catmenuconf_" . $random . " = { userewrite: '" . $conf['userewrite'] . "', start: '" . $conf['start'] . "' };
+            let catmenuobj_" . $random . " = JSON.parse(`" . htmlspecialchars_decode(json_encode($pages)) . "`);
+            (function initCatmenu_" . $random . "() {
+                const target = document.getElementById('catmenu_" . $random . "');
+                if (!target) return;
+                const renderOnce = function () {
+                    if (target.dataset.catmenuRendered === '1') return;
+                    if (typeof window.catmenu_generateSectionMenu !== 'function') return;
+                    target.dataset.catmenuRendered = '1';
+                    target.innerHTML = '';
+                    window.catmenu_generateSectionMenu(catmenuconf_" . $random . ", catmenuobj_" . $random . ", target);
+                };
+                if (typeof window.catmenu_generateSectionMenu === 'function') {
+                    renderOnce();
+                    return;
+                }
 
-	/**
-	 * Récupère à la fois les pages et les sous-dossiers d'un namespace
-	 */
-	public function getPagesAndSubfoldersItems($namespace) {
-		global $conf;
-		$skipPageWithoutTitle = (bool)$this->getConf('skip_page_without_title');
+                // En mode édition/aperçu, les scripts du plugin peuvent se charger
+                // après le rendu inline — on attend l'événement catmenu:ready.
+                document.addEventListener('catmenu:ready', function onReady() {
+                    renderOnce();
+                }, { once: true });
 
-		$childrens = @scandir($this->namespaceDir($namespace)); // Récupère les elements
-		if($childrens === false) {
-			return false;
-		}
-		
-		$start = $conf['start']; // 'accueil' dans la plupart des temps (dans bpnum:d-s:accueil)
-		
-		$items = [];
-		foreach($childrens as $child) { // Boucle sur les elements
-			if ($child[0] == '.' ) { // Remove ., .. and hidden files
-				continue;
-			}
+                setTimeout(function retryCatmenu_" . $random . "() {
+                    renderOnce();
+                }, 0);
+            })();
+        </script>";
 
-			$childPathInfo = pathinfo($child);
-			$childID = cleanID($childPathInfo['filename']);
-			$childNamespace = cleanID($namespace !== '' ? ($namespace . ':' . $childID) : $childID);
+        // Injection du footer DokuCode (si configuré)
+        $footerContent = trim((string)$this->getConf('footer_content'));
+        if ($footerContent !== '') {
+            $footerHtml = p_render('xhtml', p_get_instructions($footerContent), $info);
+            if ($footerHtml !== '') {
+                $renderer->doc .= '<div class="catmenu-footer">' . $footerHtml . '</div>';
+            }
+        }
 
-			$childHasExtension = isset($childPathInfo['extension']) && $childPathInfo['extension'] !== '';
-			$isDirNamespace = is_dir($this->namespaceDir($childNamespace));
-			$isPageNamespace = page_exists($childNamespace);
+        return true;
+    }
 
-			if(!$childHasExtension && $isDirNamespace) { // Si dossier
-				$pageNamespaceInfo = $this->getPageNamespaceInfo($childNamespace);
-				if($this->isHomepage($childID, (string)$pageNamespaceInfo['parentID'])) {
-					// Flatten namespace "homepage" folders like ns:ns so children stay direct.
-					$subItems = $this->getPagesAndSubfoldersItems($childNamespace);
-					if(is_array($subItems) && $subItems) {
-						$items = array_merge($items, $subItems);
-					}
-					continue;
-				}
+    /**
+     * Récupère à la fois les pages et les sous-dossiers d'un namespace.
+     *
+     * @return array|false  Tableau d'items ou false si le namespace n'existe pas
+     */
+    public function getPagesAndSubfoldersItems($namespace) {
+        global $conf;
+        $skipPageWithoutTitle = (bool)$this->getConf('skip_page_without_title');
+        $nsHelper = $this->getNsHelper();
 
-				$pageID = null;
-				if(page_exists("$childNamespace:$start")) {	// S'il y a une page d'accueil
-					$pageID = "$childNamespace:$start";
-				}
-				else if(page_exists("$childNamespace:$childID")) { // S'il y a une page du même nom que le dossier dans le dossier
-					$pageID = "$childNamespace:$childID";
-				}
-				else if($isPageNamespace) { // S'il y a une page du même nom que le dossier au même niveau que le dossier
-					$pageID = cleanID($namespace !== '' ? ($namespace . ':' . $childID) : $childID);
-				}
+        $childrens = @scandir($nsHelper->namespaceDir($namespace));
+        if ($childrens === false) {
+            return false;
+        }
 
-				$permission = auth_quickaclcheck($pageID);
-				if($permission < AUTH_READ) {
-					continue;
-				}
-				
-				$title = $pageID ? p_get_first_heading($pageID) : $pageID;
-				if (empty($title)) {
-					if ($skipPageWithoutTitle || empty($pageID)) {
-						continue;
-					}
-					$title = noNS($pageID);
-				}
+        $start = $conf['start']; // page de démarrage (ex. 'accueil', 'start')
 
-				$items[] = array(
-					'title' => $title,
-					'url' => $pageID? wl($pageID) : null,
-					'icon' => $this->getPageImage($pageID),
-					'pagesiconUploadUrl' => $this->getPagesiconUploadUrl($pageID ?: $childNamespace),
-					'folderNamespace' => $childNamespace,
-					'namespace' => $childNamespace,
-					'subtree' => $this->getPagesAndSubfoldersItems($childNamespace),
-					'permission' => $permission
-				);
-				
-				continue;
-			}
-			
-			if(!$isDirNamespace && $isPageNamespace) { // Si page seulement
-				$skipRegex = $this->getConf('skip_file');
-				if (!empty($skipRegex) && preg_match($skipRegex, $childNamespace)) {
-					continue;
-				}
+        $items = [];
+        foreach ($childrens as $child) {
+            if ($child[0] === '.') { // ignorer ., .. et fichiers cachés
+                continue;
+            }
 
-				$pageNamespaceInfo = $this->getPageNamespaceInfo("$namespace:$childID");
-				if($this->isHomepage($childID, $pageNamespaceInfo['parentID'])) {
-					continue;
-				}
+            $childPathInfo  = pathinfo($child);
+            $childID        = cleanID($childPathInfo['filename']);
+            $childNamespace = cleanID($namespace !== '' ? ($namespace . ':' . $childID) : $childID);
 
-				$permission = auth_quickaclcheck($childNamespace);
-				if($permission < AUTH_READ) {
-					continue;
-				}
-				
-				$title = p_get_first_heading($childNamespace);
-				if (empty($title)) {
-					if ($skipPageWithoutTitle) {
-						continue;
-					}
-					$title = noNS($childNamespace);
-				}
-				
-				$items[] = array(
-					'title' => $title,
-					'url' => $childNamespace? wl($childNamespace) : null,
-					'icon' => $this->getPageImage($childNamespace),
-					'pagesiconUploadUrl' => $this->getPagesiconUploadUrl($childNamespace),
-					'folderNamespace' => $namespace,
-					'namespace' => $childNamespace,
-					'permission' => $permission
-				);
-			}
-		}
+            $childHasExtension = isset($childPathInfo['extension']) && $childPathInfo['extension'] !== '';
+            $isDirNamespace    = is_dir($nsHelper->namespaceDir($childNamespace));
+            $isPageNamespace   = page_exists($childNamespace);
 
-		return $items;
-	}
+            if (!$childHasExtension && $isDirNamespace) { // Dossier/namespace
+                $pageNamespaceInfo = $nsHelper->getPageNamespaceInfo($childNamespace);
+                if ($nsHelper->isHomepage($childID, (string)$pageNamespaceInfo['parentID'])) {
+                    // Aplatir les dossiers "page d'accueil" (ex. ns:ns) — leurs enfants remontent d'un niveau.
+                    $subItems = $this->getPagesAndSubfoldersItems($childNamespace);
+                    if (is_array($subItems) && $subItems) {
+                        $items = array_merge($items, $subItems);
+                    }
+                    continue;
+                }
 
-	/**
-	 * Renvoie l'URL de la petite icone (thumbnail) via le helper pagesicon.
-	 * Si aucune icone n'est definie, ne renvoie rien.
-	 */
-	public function getPageImage($page) {
-		if(!$page) return '';
+                $pageID = null;
+                if (page_exists("$childNamespace:$start")) {
+                    // Page d'accueil standard
+                    $pageID = "$childNamespace:$start";
+                } elseif (page_exists("$childNamespace:$childID")) {
+                    // Page homonyme dans le dossier
+                    $pageID = "$childNamespace:$childID";
+                } elseif ($isPageNamespace) {
+                    // Page homonyme au même niveau que le dossier
+                    $pageID = cleanID($namespace !== '' ? ($namespace . ':' . $childID) : $childID);
+                }
 
-		$page = cleanID((string)$page);
-		if($page === '') return '';
+                $permission = auth_quickaclcheck($pageID);
+                if ($permission < AUTH_READ) {
+                    continue;
+                }
 
-		/** @var helper_plugin_pagesicon|null $helper */
-		$helper = plugin_load('helper', 'pagesicon');
-		if(!$helper) return '';
+                $title = $pageID ? p_get_first_heading($pageID) : $pageID;
+                if (empty($title)) {
+                    if ($skipPageWithoutTitle || empty($pageID)) {
+                        continue;
+                    }
+                    $title = noNS($pageID);
+                }
 
-		$namespace = getNS($page);
-		$pageID = noNS($page);
-		// Prefer new pagesicon API, keep legacy fallback for older versions.
-		if(method_exists($helper, 'getPageIconUrl')) {
-			$mtime = null;
-			$iconUrl = $helper->getPageIconUrl($namespace, $pageID, 'smallorbig', ['width' => 55], $mtime, true);
-			if($iconUrl) return $iconUrl;
-		} else if(method_exists($helper, 'getImageIcon')) {
-			$mtime = null;
-			$withDefaultSupported = false;
-			try {
-				$method = new ReflectionMethod($helper, 'getImageIcon');
-				$withDefaultSupported = $method->getNumberOfParameters() >= 6;
-			} catch (ReflectionException $e) {
-				$withDefaultSupported = false;
-			}
+                $items[] = [
+                    'title'              => $title,
+                    'url'                => $pageID ? wl($pageID) : null,
+                    'icon'               => $this->getPageImage($pageID),
+                    'pagesiconUploadUrl' => $this->getPagesiconUploadUrl($pageID ?: $childNamespace),
+                    'folderNamespace'    => $childNamespace,
+                    'namespace'          => $childNamespace,
+                    'subtree'            => $this->getPagesAndSubfoldersItems($childNamespace),
+                    'permission'         => $permission,
+                ];
+                continue;
+            }
 
-			if($withDefaultSupported) {
-				$iconUrl = $helper->getImageIcon($namespace, $pageID, 'smallorbig', ['width' => 55], $mtime, true);
-			} else {
-				$iconUrl = $helper->getImageIcon($namespace, $pageID, 'smallorbig', ['width' => 55], $mtime);
-			}
-			if($iconUrl) return $iconUrl;
-		}
+            if (!$isDirNamespace && $isPageNamespace) { // Page seule
+                $skipRegex = $this->resolveSkipRegex();
+                if (!empty($skipRegex) && preg_match($skipRegex, $childNamespace)) {
+                    continue;
+                }
 
-		$iconMediaID = false;
-		if(method_exists($helper, 'getPageIconId')) {
-			$iconMediaID = $helper->getPageIconId($namespace, $pageID, 'smallorbig');
-		} else if(method_exists($helper, 'getPageImage')) {
-			$withDefaultSupported = false;
-			try {
-				$method = new ReflectionMethod($helper, 'getPageImage');
-				$withDefaultSupported = $method->getNumberOfParameters() >= 4;
-			} catch (ReflectionException $e) {
-				$withDefaultSupported = false;
-			}
+                $pageNamespaceInfo = $nsHelper->getPageNamespaceInfo("$namespace:$childID");
+                if ($nsHelper->isHomepage($childID, $pageNamespaceInfo['parentID'])) {
+                    continue;
+                }
 
-			if($withDefaultSupported) {
-				$iconMediaID = $helper->getPageImage($namespace, $pageID, 'smallorbig', true);
-			} else {
-				$iconMediaID = $helper->getPageImage($namespace, $pageID, 'smallorbig');
-			}
-		}
-		if(!$iconMediaID) return '';
+                $permission = auth_quickaclcheck($childNamespace);
+                if ($permission < AUTH_READ) {
+                    continue;
+                }
 
-		return ml($iconMediaID, ['width' => 55]);
-	}
+                $title = p_get_first_heading($childNamespace);
+                if (empty($title)) {
+                    if ($skipPageWithoutTitle) {
+                        continue;
+                    }
+                    $title = noNS($childNamespace);
+                }
 
-	private function getPagesiconUploadUrl($namespace) {
-		if ($this->pagesiconHelper === false) {
-			$this->pagesiconHelper = plugin_load('helper', 'pagesicon');
-		}
-		if (!$this->pagesiconHelper) return null;
-		if (!method_exists($this->pagesiconHelper, 'getUploadIconPage')) return null;
+                $items[] = [
+                    'title'              => $title,
+                    'url'                => $childNamespace ? wl($childNamespace) : null,
+                    'icon'               => $this->getPageImage($childNamespace),
+                    'pagesiconUploadUrl' => $this->getPagesiconUploadUrl($childNamespace),
+                    'folderNamespace'    => $namespace,
+                    'namespace'          => $childNamespace,
+                    'permission'         => $permission,
+                ];
+            }
+        }
 
-		return $this->pagesiconHelper->getUploadIconPage((string)$namespace);
-	}
-	
-	public function isHomepage($pageID, $parentID) {
-		global $conf;
-		$startPageID = $conf['start'];
-		
-		return $pageID == $startPageID || $pageID == $parentID;
-	}
-	
-	public function namespaceDir($namespace) {
-		global $conf;
-		return $conf['datadir'] . '/' . utf8_encodeFN(str_replace(':', '/', $namespace));
-	}
-	
-	public function getPageNamespaceInfo($namespace) {
-		$namespaces = explode(':', $namespace);
-		
-		return array(
-			'pageNamespace' => $namespace,
-			'pageID' => array_pop($namespaces),
-			'parentNamespace' => implode(':', $namespaces),
-			'parentID' => array_pop($namespaces)
-		);
-	}
+        return $items;
+    }
+
+    /**
+     * Résout la valeur effective de l'option skip_file.
+     *
+     * Si la valeur est le jeton spécial "@hidepages", retourne la regex de masquage
+     * de pages configurée globalement dans DokuWiki ($conf['hidepages']).
+     * Sinon, retourne la valeur brute telle quelle.
+     */
+    private function resolveSkipRegex(): string
+    {
+        global $conf;
+        $raw = (string)$this->getConf('skip_file');
+        if (trim($raw) === '@hidepages') {
+            return (string)($conf['hidepages'] ?? '');
+        }
+        return $raw;
+    }
+
+    /**
+     * Retourne l'URL de la miniature d'icône via le helper pagesicon.
+     * Retourne une chaîne vide si aucune icône n'est définie.
+     */
+    public function getPageImage($page) {
+        if (!$page) return '';
+
+        $page = cleanID((string)$page);
+        if ($page === '') return '';
+
+        /** @var helper_plugin_pagesicon|null $helper */
+        $helper = plugin_load('helper', 'pagesicon');
+        if (!$helper) return '';
+
+        $namespace = getNS($page);
+        $pageID    = noNS($page);
+
+        // Nouvelle API pagesicon (préférée)
+        if (method_exists($helper, 'getPageIconUrl')) {
+            $mtime   = null;
+            $iconUrl = $helper->getPageIconUrl($namespace, $pageID, 'smallorbig', ['width' => 55], $mtime, true);
+            if ($iconUrl) return $iconUrl;
+        } elseif (method_exists($helper, 'getImageIcon')) {
+            $mtime                = null;
+            $withDefaultSupported = false;
+            try {
+                $method               = new ReflectionMethod($helper, 'getImageIcon');
+                $withDefaultSupported = $method->getNumberOfParameters() >= 6;
+            } catch (ReflectionException $e) {
+                $withDefaultSupported = false;
+            }
+
+            $iconUrl = $withDefaultSupported
+                ? $helper->getImageIcon($namespace, $pageID, 'smallorbig', ['width' => 55], $mtime, true)
+                : $helper->getImageIcon($namespace, $pageID, 'smallorbig', ['width' => 55], $mtime);
+            if ($iconUrl) return $iconUrl;
+        }
+
+        // Fallback : récupération de l'ID média puis génération de l'URL
+        $iconMediaID = false;
+        if (method_exists($helper, 'getPageIconId')) {
+            $iconMediaID = $helper->getPageIconId($namespace, $pageID, 'smallorbig');
+        } elseif (method_exists($helper, 'getPageImage')) {
+            $withDefaultSupported = false;
+            try {
+                $method               = new ReflectionMethod($helper, 'getPageImage');
+                $withDefaultSupported = $method->getNumberOfParameters() >= 4;
+            } catch (ReflectionException $e) {
+                $withDefaultSupported = false;
+            }
+
+            $iconMediaID = $withDefaultSupported
+                ? $helper->getPageImage($namespace, $pageID, 'smallorbig', true)
+                : $helper->getPageImage($namespace, $pageID, 'smallorbig');
+        }
+        if (!$iconMediaID) return '';
+
+        return ml($iconMediaID, ['width' => 55]);
+    }
+
+    /**
+     * Retourne l'URL de la page d'upload d'icône pour un namespace (via pagesicon).
+     */
+    private function getPagesiconUploadUrl($namespace) {
+        if ($this->pagesiconHelper === false) {
+            $this->pagesiconHelper = plugin_load('helper', 'pagesicon');
+        }
+        if (!$this->pagesiconHelper) return null;
+        if (!method_exists($this->pagesiconHelper, 'getUploadIconPage')) return null;
+
+        return $this->pagesiconHelper->getUploadIconPage((string)$namespace);
+    }
 }

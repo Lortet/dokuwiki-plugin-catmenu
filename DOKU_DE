@@ -1,0 +1,77 @@
+====== CatMenu Plugin ======
+
+---- plugin ----
+description: Zeigt ein Namespace-Baummenü an
+author     : Valentin LORTET
+email      : contact@valentinlortet.fr
+type       : Syntax, Action
+lastupdate : 2026-03-14
+compatible : Librarian
+depends    :
+conflicts  :
+similar    :
+tags       : Navigation, Menu, Namespace, ProseMirror
+
+downloadurl: https://github.com/Lortet/dokuwiki-plugin-catmenu/zipball/master
+bugtracker : https://github.com/Lortet/dokuwiki-plugin-catmenu/issues
+sourcerepo : https://github.com/Lortet/dokuwiki-plugin-catmenu/
+donationurl:
+screenshot_img :
+----
+
+===== Installation =====
+
+Plugin über den [[plugin:extension|Erweiterungs-Manager]] installieren.
+
+===== Beschreibung =====
+
+Das **catmenu**-Plugin ermöglicht:
+  * die Anzeige eines Baummenüs (Seiten + Unterordner) für einen Namespace;
+  * das automatische Öffnen des Astes, der zur aktuellen Seite gehört;
+  * die Verarbeitung von Namespace-Startseiten (''$conf['start']'');
+  * ein konfigurierbares Kontextmenü mit Aktionen (je nach Berechtigung);
+  * das Einfügen von benutzerdefiniertem DokuWiki-Markup am Ende des Menüs.
+
+===== Syntax =====
+
+Verwendung:
+  * ''{{catmenu>namespace}}''
+
+Beispiele:
+  * ''{{catmenu>.}}'' (aktueller Namespace)
+  * ''{{catmenu>wiki}}''
+  * ''{{catmenu>docs:projekt}}''
+
+===== Einstellungen =====
+
+^ Name ^ Beschreibung ^ Standardwert ^
+| skip_file | Regulärer Ausdruck zum Ignorieren von Seiten-IDs. Akzeptiert auch ''@hidepages'', um die DokuWiki-Einstellung ''hidepages'' zu übernehmen. | '''' |
+| skip_page_without_title | Seiten ohne H1-Titel ausblenden. | ''true'' |
+| show_in_editor_menu | Einfüge-Schaltfläche im Editor anzeigen. | ''true'' |
+| context_menu_items | Aktionen im Kontextmenü (Kontrollkästchen). | alle aktiviert |
+| footer_content | Mehrzeiliges DokuWiki-Markup, das am Ende jedes Menüs eingefügt wird. | '''' |
+
+===== Kompatibilität =====
+
+  * Kompatibel mit [[https://www.dokuwiki.org/plugin:prosemirror|ProseMirror]]
+  * Verwendet [[https://www.dokuwiki.org/plugin:pagesicon|pagesicon]] zur Anzeige von Symbolen, wenn verfügbar. Die Aktion „Symbol verwalten" im Kontextmenü erscheint nur, wenn ''pagesicon'' installiert ist.
+  * Kompatibel mit dem Plugin ''newpagefill'' zur Seitenerstellung. Wenn vorhanden, verwendet ''catmenu'' dessen Erstellungsassistenten.
+
+===== Kontextmenü =====
+
+Rechtsklick auf einen Menüeintrag. Jede Aktion kann in der Konfiguration einzeln aktiviert oder deaktiviert werden:
+  * **Neue Seite erstellen** (''newpage'') — wenn berechtigt;
+  * **Cache neu laden** (''reload'') — (''purge=true'');
+  * **Medien verwalten** (''medias'') — öffnet den Medien-Manager;
+  * **Symbol verwalten** (''pagesicon'') — nur wenn ''pagesicon'' installiert ist;
+  * **URL kopieren** (''url'').
+
+===== Footer-DokuCode =====
+
+Die Einstellung ''footer_content'' akzeptiert mehrzeiliges DokuWiki-Markup. Es wird als HTML gerendert und in einem ''<div class="catmenu-footer">'' unterhalb jedes Menüs eingefügt. Nützlich für permanente Links, Hinweise oder Schnellzugriffe.
+
+===== Berechtigungen =====
+
+Die Darstellung folgt den DokuWiki-ACL-Regeln:
+  * Leseberechtigung ist erforderlich, um einen Eintrag anzuzeigen;
+  * Kontextaktionen sind je nach Berechtigung eingeschränkt (create/edit/upload).

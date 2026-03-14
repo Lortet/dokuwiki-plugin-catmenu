@@ -30,18 +30,21 @@ Exemples :
 
 Dans le gestionnaire de configuration :
 
-- `skip_file` : regex pour ignorer certains IDs de page.
+- `skip_file` : regex pour ignorer certains IDs de page. Accepte aussi la valeur spéciale `@hidepages` pour réutiliser automatiquement le paramètre `hidepages` de DokuWiki.
 - `skip_page_without_title` : ignorer les pages sans H1.
 - `show_in_editor_menu` : afficher le bouton d'insertion dans l'éditeur.
+- `context_menu_items` : cases à cocher pour choisir les actions disponibles dans le menu contextuel (clic droit). Toutes activées par défaut.
+- `footer_content` : DokuCode multiligne injecté à la fin de chaque menu (liens, notes, etc.). Vide par défaut.
 
 ## Compatibilité
 
 - Compatible avec le plugin [ProseMirror](https://www.dokuwiki.org/plugin:prosemirror)
-- `catmenu` utilise le plugin [pagesicon](https://www.dokuwiki.org/plugin:pagesicon) pour afficher les icônes, si `pagesicon` est disponible.
+- `catmenu` utilise le plugin [pagesicon](https://www.dokuwiki.org/plugin:pagesicon) pour afficher les icônes, si disponible. L'action "Gérer l'icône" dans le menu contextuel n'apparaît que si pagesicon est installé.
+- Compatible avec le plugin `newpagefill` pour la création de pages. S'il est présent, `catmenu` utilise son assistant de création.
 
 ## Menu contextuel
 
-Clic droit sur un item :
+Clic droit sur un item (actions configurables individuellement) :
 
 - créer une nouvelle page (selon droits),
 - recharger le cache (`purge=true`),

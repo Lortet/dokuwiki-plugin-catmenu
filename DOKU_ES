@@ -1,0 +1,77 @@
+====== CatMenu Plugin ======
+
+---- plugin ----
+description: Muestra un menú en árbol de namespace
+author     : Valentin LORTET
+email      : contact@valentinlortet.fr
+type       : Syntax, Action
+lastupdate : 2026-03-14
+compatible : Librarian
+depends    :
+conflicts  :
+similar    :
+tags       : Navigation, Menu, Namespace, ProseMirror
+
+downloadurl: https://github.com/Lortet/dokuwiki-plugin-catmenu/zipball/master
+bugtracker : https://github.com/Lortet/dokuwiki-plugin-catmenu/issues
+sourcerepo : https://github.com/Lortet/dokuwiki-plugin-catmenu/
+donationurl:
+screenshot_img :
+----
+
+===== Instalación =====
+
+Instalar el plugin desde el [[plugin:extension|Gestor de extensiones]].
+
+===== Descripción =====
+
+El plugin **catmenu** permite:
+  * mostrar un menú en árbol (páginas + subcarpetas) para un namespace;
+  * abrir automáticamente la rama correspondiente a la página actual;
+  * gestionar las páginas de inicio de namespace (''$conf['start']'');
+  * ofrecer un menú contextual de acciones configurable (según permisos);
+  * insertar marcado DokuWiki personalizado al pie de cada menú.
+
+===== Sintaxis =====
+
+Uso:
+  * ''{{catmenu>namespace}}''
+
+Ejemplos:
+  * ''{{catmenu>.}}'' (namespace actual)
+  * ''{{catmenu>wiki}}''
+  * ''{{catmenu>docs:proyecto}}''
+
+===== Parámetros =====
+
+^ Nombre ^ Descripción ^ Valor por defecto ^
+| skip_file | Expresión regular para ignorar IDs de páginas. También acepta ''@hidepages'' para reutilizar el parámetro ''hidepages'' de DokuWiki. | '''' |
+| skip_page_without_title | Ignorar páginas sin título H1. | ''true'' |
+| show_in_editor_menu | Mostrar el botón de inserción en el editor. | ''true'' |
+| context_menu_items | Acciones disponibles en el menú contextual (casillas de verificación). | todas activadas |
+| footer_content | Marcado DokuWiki multilínea insertado al final de cada menú. | '''' |
+
+===== Compatibilidad =====
+
+  * Compatible con [[https://www.dokuwiki.org/plugin:prosemirror|ProseMirror]]
+  * Usa [[https://www.dokuwiki.org/plugin:pagesicon|pagesicon]] para mostrar iconos cuando está disponible. La acción "Gestionar icono" en el menú contextual solo aparece si ''pagesicon'' está instalado.
+  * Compatible con el plugin ''newpagefill'' para la creación de páginas. Cuando está disponible, ''catmenu'' usa su asistente de creación.
+
+===== Menú contextual =====
+
+Clic derecho sobre un elemento del menú. Cada acción puede activarse o desactivarse individualmente en la configuración:
+  * **Crear nueva página** (''newpage'') — si está autorizado;
+  * **Recargar caché** (''reload'') — (''purge=true'');
+  * **Gestionar multimedia** (''medias'') — abre el gestor de archivos multimedia;
+  * **Gestionar icono** (''pagesicon'') — solo si ''pagesicon'' está instalado;
+  * **Copiar URL** (''url'').
+
+===== Footer DokuCode =====
+
+El parámetro ''footer_content'' acepta marcado DokuWiki multilínea. Se renderiza como HTML y se inserta dentro de un ''<div class="catmenu-footer">'' bajo cada menú. Útil para añadir enlaces permanentes, notas o accesos directos.
+
+===== Permisos =====
+
+El renderizado sigue las reglas ACL de DokuWiki:
+  * se requiere permiso de lectura para mostrar un elemento;
+  * las acciones contextuales están limitadas según los permisos (create/edit/upload).

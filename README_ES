@@ -1,0 +1,60 @@
+# CatMenu
+
+`catmenu` muestra un menú en árbol (páginas + subcarpetas) para un namespace de DokuWiki.
+
+## Sintaxis
+
+```text
+{{catmenu>namespace}}
+```
+
+Ejemplos:
+
+```text
+{{catmenu>.}}
+{{catmenu>wiki}}
+{{catmenu>docs:proyecto}}
+```
+
+- `.`: utiliza el namespace actual.
+- `namespace`: utiliza el namespace indicado.
+
+## Comportamiento
+
+- lista las páginas y subcarpetas legibles por el usuario actual.
+- abre automáticamente la rama correspondiente a la página actual.
+- gestiona las páginas de inicio de namespace (`$conf['start']`).
+- oculta las páginas sin título H1 cuando `skip_page_without_title` está activado.
+
+## Configuración
+
+En el Gestor de Configuración:
+
+- `skip_file`: expresión regular para ignorar IDs de páginas. También acepta el valor especial `@hidepages` para reutilizar automáticamente el parámetro `hidepages` de DokuWiki.
+- `skip_page_without_title`: ignorar páginas sin título H1.
+- `show_in_editor_menu`: mostrar el botón de inserción en el editor.
+- `context_menu_items`: casillas de verificación para elegir las acciones disponibles en el menú contextual (clic derecho). Todas activadas por defecto.
+- `footer_content`: marcado DokuWiki multilínea insertado al final de cada menú (enlaces, notas, etc.). Vacío por defecto.
+
+## Compatibilidad
+
+- Compatible con el plugin [ProseMirror](https://www.dokuwiki.org/plugin:prosemirror).
+- `catmenu` usa [pagesicon](https://www.dokuwiki.org/plugin:pagesicon) para mostrar iconos cuando está disponible. La acción "Gestionar icono" en el menú contextual solo aparece si pagesicon está instalado.
+- Compatible con el plugin `newpagefill` para la creación de páginas. Cuando está disponible, `catmenu` usa su asistente de creación.
+
+## Menú contextual
+
+Clic derecho sobre un elemento (cada acción es configurable individualmente):
+
+- crear una nueva página (según permisos),
+- recargar la caché (`purge=true`),
+- abrir el gestor de archivos multimedia,
+- abrir la gestión de iconos (`pagesicon`) si está disponible,
+- copiar la URL.
+
+## Permisos
+
+El renderizado sigue las reglas ACL de DokuWiki:
+
+- se requiere permiso de lectura para mostrar un elemento,
+- las acciones contextuales están limitadas según los permisos (create/edit/upload).

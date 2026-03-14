@@ -3,18 +3,18 @@
 ---- plugin ----
 description: Affiche un menu arborescent de namespace
 author     : Valentin LORTET
-email      : contact@lortet.fr
+email      : contact@valentinlortet.fr
 type       : Syntax, Action
-lastupdate : 2026-03-09
+lastupdate : 2026-03-14
 compatible : Librarian
 depends    :
 conflicts  :
 similar    :
 tags       : Navigation, Menu, Namespace, ProseMirror
 
-downloadurl:
-bugtracker :
-sourcerepo :
+downloadurl: https://github.com/Lortet/dokuwiki-plugin-catmenu/zipball/master
+bugtracker : https://github.com/Lortet/dokuwiki-plugin-catmenu/issues
+sourcerepo : https://github.com/Lortet/dokuwiki-plugin-catmenu/
 donationurl:
 screenshot_img :
 ----
@@ -29,7 +29,8 @@ Le plugin **catmenu** permet :
   * d'afficher un menu arborescent (pages + sous-dossiers) pour un namespace ;
   * d'ouvrir automatiquement la branche correspondant à la page courante ;
   * de gérer les pages d'accueil de namespace (''$conf['start']'') ;
-  * de proposer un menu contextuel d'actions (selon permissions).
+  * de proposer un menu contextuel d'actions configurable (selon permissions) ;
+  * d'injecter du DokuCode personnalisé en pied de menu.
 
 ===== Syntaxe =====
 
@@ -44,32 +45,30 @@ Exemples :
 ===== Paramètres =====
 
 ^ Nom ^ Description ^ Valeur par défaut ^
-| skip_file | Regex pour ignorer des IDs de page. | '''' |
+| skip_file | Regex pour ignorer des IDs de page. Accepte aussi ''@hidepages'' pour réutiliser le paramètre ''hidepages'' de DokuWiki. | '''' |
 | skip_page_without_title | Ignorer les pages sans titre H1. | ''true'' |
 | show_in_editor_menu | Afficher le bouton d'insertion dans l'éditeur. | ''true'' |
+| context_menu_items | Actions disponibles dans le menu contextuel (cases à cocher). | toutes activées |
+| footer_content | DokuCode multiligne injecté à la fin de chaque menu. | '''' |
 
 ===== Compatibilité =====
 
   * Compatible avec [[https://www.dokuwiki.org/plugin:prosemirror|ProseMirror]]
-  * Utilise [[https://www.dokuwiki.org/plugin:pagesicon|pagesicon]] pour afficher les icônes quand disponible.
-
-===== Icônes (pagesicon) =====
-
-Si le helper ''pagesicon'' est installé :
-  * récupération des icônes via l'API helper ;
-  * fallback possible vers l'image par défaut ''pagesicon'' sur versions récentes ;
-  * fallback legacy conservé pour anciennes signatures helper.
-
-Si aucune icône n'est trouvée, l'entrée est affichée sans image.
+  * Utilise [[https://www.dokuwiki.org/plugin:pagesicon|pagesicon]] pour afficher les icônes quand disponible. L'action "Gérer l'icône" dans le menu contextuel n'apparaît que si ''pagesicon'' est installé.
+  * Compatible avec le plugin ''newpagefill'' pour la création de pages. S'il est présent, ''catmenu'' utilise son assistant de création.
 
 ===== Menu contextuel =====
 
-Clic droit sur un item du menu :
-  * créer une nouvelle page (si autorisé) ;
-  * recharger le cache (''purge=true'') ;
-  * ouvrir le gestionnaire de médias ;
-  * ouvrir la gestion d'icône (''pagesicon'') si disponible ;
-  * copier l'URL.
+Clic droit sur un item du menu. Chaque action est activable/désactivable individuellement dans la configuration :
+  * **Créer une nouvelle page** (''newpage'') — si autorisé ;
+  * **Recharger le cache** (''reload'') — (''purge=true'') ;
+  * **Gérer les médias** (''medias'') — ouvre le gestionnaire de médias ;
+  * **Gérer l'icône** (''pagesicon'') — uniquement si ''pagesicon'' est installé ;
+  * **Copier l'URL** (''url'').
+
+===== Footer DokuCode =====
+
+Le paramètre ''footer_content'' accepte du markup DokuWiki multiligne. Il est rendu en HTML et injecté dans un bloc ''<div class="catmenu-footer">'' sous chaque menu. Utile pour ajouter des liens permanents, des notes ou des raccourcis.
 
 ===== Permissions =====
 

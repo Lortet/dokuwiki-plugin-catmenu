@@ -1,0 +1,60 @@
+# CatMenu
+
+`catmenu` zeigt ein Baummenü (Seiten + Unterordner) für einen DokuWiki-Namespace an.
+
+## Syntax
+
+```text
+{{catmenu>namespace}}
+```
+
+Beispiele:
+
+```text
+{{catmenu>.}}
+{{catmenu>wiki}}
+{{catmenu>docs:projekt}}
+```
+
+- `.`: verwendet den aktuellen Namespace.
+- `namespace`: verwendet den angegebenen Namespace.
+
+## Verhalten
+
+- listet alle für den aktuellen Benutzer lesbaren Seiten und Unterordner.
+- öffnet automatisch den Ast, der zur aktuellen Seite gehört.
+- verarbeitet Namespace-Startseiten (`$conf['start']`).
+- blendet Seiten ohne H1-Titel aus, wenn `skip_page_without_title` aktiviert ist.
+
+## Konfiguration
+
+Im Konfigurationsmanager:
+
+- `skip_file`: regulärer Ausdruck zum Ignorieren von Seiten-IDs. Akzeptiert auch den Sonderwert `@hidepages`, um die globale DokuWiki-Einstellung `hidepages` automatisch zu übernehmen.
+- `skip_page_without_title`: Seiten ohne H1-Titel ausblenden.
+- `show_in_editor_menu`: Einfüge-Schaltfläche im Editor anzeigen.
+- `context_menu_items`: Kontrollkästchen zur Auswahl der Aktionen im Kontextmenü (Rechtsklick). Standardmäßig alle aktiviert.
+- `footer_content`: mehrzeiliges DokuWiki-Markup, das am Ende jedes Menüs eingefügt wird (Links, Hinweise usw.). Standardmäßig leer.
+
+## Kompatibilität
+
+- Kompatibel mit dem Plugin [ProseMirror](https://www.dokuwiki.org/plugin:prosemirror).
+- `catmenu` verwendet [pagesicon](https://www.dokuwiki.org/plugin:pagesicon) zur Anzeige von Symbolen, wenn das Plugin verfügbar ist. Die Aktion „Symbol verwalten" im Kontextmenü erscheint nur, wenn pagesicon installiert ist.
+- Kompatibel mit dem Plugin `newpagefill` zur Seitenerstellung. Wenn vorhanden, verwendet `catmenu` dessen Erstellungsassistenten.
+
+## Kontextmenü
+
+Rechtsklick auf einen Eintrag (jede Aktion ist individuell konfigurierbar):
+
+- neue Seite erstellen (je nach Berechtigungen),
+- Cache neu laden (`purge=true`),
+- Medien-Manager öffnen,
+- Symbol-Verwaltung öffnen (`pagesicon`), wenn verfügbar,
+- URL kopieren.
+
+## Berechtigungen
+
+Die Darstellung folgt den DokuWiki-ACL-Regeln:
+
+- Leseberechtigung ist erforderlich, um einen Eintrag anzuzeigen,
+- Kontextaktionen sind je nach Berechtigung eingeschränkt (create/edit/upload).

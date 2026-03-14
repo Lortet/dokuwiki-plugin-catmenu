@@ -3,18 +3,18 @@
 ---- plugin ----
 description: Displays a namespace tree menu
 author     : Valentin LORTET
-email      : contact@lortet.fr
+email      : contact@valentinlortet.fr
 type       : Syntax, Action
-lastupdate : 2026-03-09
+lastupdate : 2026-03-14
 compatible : Librarian
 depends    :
 conflicts  :
 similar    :
 tags       : Navigation, Menu, Namespace, ProseMirror
 
-downloadurl:
-bugtracker :
-sourcerepo :
+downloadurl: https://github.com/Lortet/dokuwiki-plugin-catmenu/zipball/master
+bugtracker : https://github.com/Lortet/dokuwiki-plugin-catmenu/issues
+sourcerepo : https://github.com/Lortet/dokuwiki-plugin-catmenu/
 donationurl:
 screenshot_img :
 ----
@@ -29,7 +29,8 @@ The **catmenu** plugin allows you to:
   * display a tree menu (pages + subfolders) for a namespace;
   * automatically open the branch matching the current page;
   * handle namespace start pages (''$conf['start']'');
-  * provide a context menu with actions (depending on permissions).
+  * provide a configurable right-click context menu (depending on permissions);
+  * inject custom DokuWiki markup at the bottom of the menu.
 
 ===== Syntax =====
 
@@ -44,32 +45,30 @@ Examples:
 ===== Settings =====
 
 ^ Name ^ Description ^ Default value ^
-| skip_file | Regex used to ignore page IDs. | '''' |
+| skip_file | Regex used to ignore page IDs. Also accepts ''@hidepages'' to reuse DokuWiki's ''hidepages'' setting. | '''' |
 | skip_page_without_title | Ignore pages without an H1 title. | ''true'' |
 | show_in_editor_menu | Show the insert button in the editor. | ''true'' |
+| context_menu_items | Actions available in the right-click context menu (checkboxes). | all enabled |
+| footer_content | Multiline DokuWiki markup injected at the bottom of every menu. | '''' |
 
 ===== Compatibility =====
 
   * Compatible with [[https://www.dokuwiki.org/plugin:prosemirror|ProseMirror]]
-  * Uses [[https://www.dokuwiki.org/plugin:pagesicon|pagesicon]] to display icons when available.
-
-===== Icons (pagesicon) =====
-
-If the ''pagesicon'' helper is installed:
-  * icons are retrieved through the helper API;
-  * default ''pagesicon'' image fallback is available on recent versions;
-  * legacy fallback is kept for older helper signatures.
-
-If no icon is found, the item is rendered without an image.
+  * Uses [[https://www.dokuwiki.org/plugin:pagesicon|pagesicon]] to display icons when available. The "Manage icon" context menu action only appears if ''pagesicon'' is installed.
+  * Compatible with the ''newpagefill'' plugin for page creation. When available, ''catmenu'' uses its creation helper.
 
 ===== Context menu =====
 
-Right-click on a menu item:
-  * create a new page (if allowed);
-  * reload cache (''purge=true'');
-  * open media manager;
-  * open icon management (''pagesicon'') when available;
-  * copy URL.
+Right-click on a menu item. Each action can be individually enabled or disabled in the configuration:
+  * **Create a new page** (''newpage'') — if allowed;
+  * **Reload cache** (''reload'') — (''purge=true'');
+  * **Manage media** (''medias'') — opens the media manager;
+  * **Manage icon** (''pagesicon'') — only shown if ''pagesicon'' is installed;
+  * **Copy URL** (''url'').
+
+===== Footer DokuCode =====
+
+The ''footer_content'' setting accepts multiline DokuWiki markup. It is rendered as HTML and injected inside a ''<div class="catmenu-footer">'' below every menu. Useful for adding permanent links, notes or shortcuts.
 
 ===== Permissions =====
 
