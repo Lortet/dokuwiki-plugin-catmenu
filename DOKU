@@ -51,7 +51,7 @@ Exemples :
 | skip_page_without_title | Ignorer les pages sans titre H1. | ''true'' |
 | show_in_editor_menu | Afficher le bouton d'insertion dans l'éditeur. | ''true'' |
 | context_menu_items | Actions disponibles dans le menu contextuel (cases à cocher). | toutes activées |
-| footer_content | DokuCode multiligne injecté à la fin de chaque menu. | '''' |
+| footer_content | DokuCode multiligne injecté à la fin du menu contextuel (clic droit). | '''' |
 
 ===== Compatibilité =====
 
@@ -70,7 +70,7 @@ Clic droit sur un item du menu. Chaque action est activable/désactivable indivi
 
 ===== Footer DokuCode =====
 
-Le paramètre ''footer_content'' accepte du markup DokuWiki multiligne. Il est rendu en HTML et injecté dans un bloc ''<div class="catmenu-footer">'' sous chaque menu. Utile pour ajouter des liens permanents, des notes ou des raccourcis.
+Le paramètre ''footer_content'' accepte du markup DokuWiki multiligne. Il est rendu en HTML et injecté dans un bloc ''<div class="catmenu-footer">'' en bas du menu contextuel (clic droit). Utile pour ajouter des liens permanents, des notes ou des raccourcis.
 
 ===== Permissions =====
 

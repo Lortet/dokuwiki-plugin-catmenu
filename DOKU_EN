@@ -51,7 +51,7 @@ Examples:
 | skip_page_without_title | Ignore pages without an H1 title. | ''true'' |
 | show_in_editor_menu | Show the insert button in the editor. | ''true'' |
 | context_menu_items | Actions available in the right-click context menu (checkboxes). | all enabled |
-| footer_content | Multiline DokuWiki markup injected at the bottom of every menu. | '''' |
+| footer_content | Multiline DokuWiki markup injected at the bottom of the right-click context menu. | '''' |
 
 ===== Compatibility =====
 
@@ -70,7 +70,7 @@ Right-click on a menu item. Each action can be individually enabled or disabled 
 
 ===== Footer DokuCode =====
 
-The ''footer_content'' setting accepts multiline DokuWiki markup. It is rendered as HTML and injected inside a ''<div class="catmenu-footer">'' below every menu. Useful for adding permanent links, notes or shortcuts.
+The ''footer_content'' setting accepts multiline DokuWiki markup. It is rendered as HTML and injected inside a ''<div class="catmenu-footer">'' at the bottom of the right-click context menu. Useful for adding permanent links, notes or shortcuts.
 
 ===== Permissions =====
 

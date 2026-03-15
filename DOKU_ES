@@ -32,7 +32,7 @@ El plugin **catmenu** permite:
   * abrir automáticamente la rama correspondiente a la página actual;
   * gestionar las páginas de inicio de namespace (''$conf['start']'');
   * ofrecer un menú contextual de acciones configurable (según permisos);
-  * insertar marcado DokuWiki personalizado al pie de cada menú.
+  * insertar marcado DokuWiki personalizado al pie del menú contextual.
 
 ===== Sintaxis =====
 
@@ -51,7 +51,7 @@ Ejemplos:
 | skip_page_without_title | Ignorar páginas sin título H1. | ''true'' |
 | show_in_editor_menu | Mostrar el botón de inserción en el editor. | ''true'' |
 | context_menu_items | Acciones disponibles en el menú contextual (casillas de verificación). | todas activadas |
-| footer_content | Marcado DokuWiki multilínea insertado al final de cada menú. | '''' |
+| footer_content | Marcado DokuWiki multilínea insertado al final del menú contextual. | '''' |
 
 ===== Compatibilidad =====
 
@@ -70,7 +70,7 @@ Clic derecho sobre un elemento del menú. Cada acción puede activarse o desacti
 
 ===== Footer DokuCode =====
 
-El parámetro ''footer_content'' acepta marcado DokuWiki multilínea. Se renderiza como HTML y se inserta dentro de un ''<div class="catmenu-footer">'' bajo cada menú. Útil para añadir enlaces permanentes, notas o accesos directos.
+El parámetro ''footer_content'' acepta marcado DokuWiki multilínea. Se renderiza como HTML y se inserta dentro de un ''<div class="catmenu-footer">'' al final del menú contextual. Útil para añadir enlaces permanentes, notas o accesos directos.
 
 ===== Permisos =====
 

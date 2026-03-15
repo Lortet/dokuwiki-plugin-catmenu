@@ -36,7 +36,7 @@ En el Gestor de Configuración:
 - `skip_page_without_title`: ignorar páginas sin título H1.
 - `show_in_editor_menu`: mostrar el botón de inserción en el editor.
 - `context_menu_items`: casillas de verificación para elegir las acciones disponibles en el menú contextual (clic derecho). Todas activadas por defecto.
-- `footer_content`: marcado DokuWiki multilínea insertado al final de cada menú (enlaces, notas, etc.). Vacío por defecto.
+- `footer_content`: marcado DokuWiki multilínea insertado al final del menú contextual (clic derecho) (enlaces, notas, etc.). Vacío por defecto.
 
 ## Compatibilidad
 

@@ -51,7 +51,7 @@ Beispiele:
 | skip_page_without_title | Seiten ohne H1-Titel ausblenden. | ''true'' |
 | show_in_editor_menu | Einfüge-Schaltfläche im Editor anzeigen. | ''true'' |
 | context_menu_items | Aktionen im Kontextmenü (Kontrollkästchen). | alle aktiviert |
-| footer_content | Mehrzeiliges DokuWiki-Markup, das am Ende jedes Menüs eingefügt wird. | '''' |
+| footer_content | Mehrzeiliges DokuWiki-Markup, das am Ende des Kontextmenüs per Rechtsklick eingefügt wird. | '''' |
 
 ===== Kompatibilität =====
 
@@ -70,7 +70,7 @@ Rechtsklick auf einen Menüeintrag. Jede Aktion kann in der Konfiguration einzel
 
 ===== Footer-DokuCode =====
 
-Die Einstellung ''footer_content'' akzeptiert mehrzeiliges DokuWiki-Markup. Es wird als HTML gerendert und in einem ''<div class="catmenu-footer">'' unterhalb jedes Menüs eingefügt. Nützlich für permanente Links, Hinweise oder Schnellzugriffe.
+Die Einstellung ''footer_content'' akzeptiert mehrzeiliges DokuWiki-Markup. Es wird als HTML gerendert und in einem ''<div class="catmenu-footer">'' am Ende des Kontextmenüs per Rechtsklick eingefügt. Nützlich für permanente Links, Hinweise oder Schnellzugriffe.
 
 ===== Berechtigungen =====
 

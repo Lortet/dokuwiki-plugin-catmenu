@@ -36,7 +36,7 @@ Dans le gestionnaire de configuration :
 - `skip_page_without_title` : ignorer les pages sans H1.
 - `show_in_editor_menu` : afficher le bouton d'insertion dans l'éditeur.
 - `context_menu_items` : cases à cocher pour choisir les actions disponibles dans le menu contextuel (clic droit). Toutes activées par défaut.
-- `footer_content` : DokuCode multiligne injecté à la fin de chaque menu (liens, notes, etc.). Vide par défaut.
+- `footer_content` : DokuCode multiligne injecté à la fin du menu contextuel (clic droit) (liens, notes, etc.). Vide par défaut.
 
 ## Compatibilité
 

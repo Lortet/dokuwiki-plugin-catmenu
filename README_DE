@@ -36,7 +36,7 @@ Im Konfigurationsmanager:
 - `skip_page_without_title`: Seiten ohne H1-Titel ausblenden.
 - `show_in_editor_menu`: Einfüge-Schaltfläche im Editor anzeigen.
 - `context_menu_items`: Kontrollkästchen zur Auswahl der Aktionen im Kontextmenü (Rechtsklick). Standardmäßig alle aktiviert.
-- `footer_content`: mehrzeiliges DokuWiki-Markup, das am Ende jedes Menüs eingefügt wird (Links, Hinweise usw.). Standardmäßig leer.
+- `footer_content`: mehrzeiliges DokuWiki-Markup, das am Ende des Kontextmenüs per Rechtsklick eingefügt wird (Links, Hinweise usw.). Standardmäßig leer.
 
 ## Kompatibilität
 

@@ -4,3 +4,4 @@ email  contact@valentinlortet.fr
 date   2026-03-14
 name   CatMenu
 desc   ADisplays a namespace tree menu
+url    https://www.dokuwiki.org/plugin:extranet

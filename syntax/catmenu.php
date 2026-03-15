@@ -106,15 +106,6 @@ class syntax_plugin_catmenu_catmenu extends SyntaxPlugin {
             })();
         </script>";
 
-        // Injection du footer DokuCode (si configuré)
-        $footerContent = trim((string)$this->getConf('footer_content'));
-        if ($footerContent !== '') {
-            $footerHtml = p_render('xhtml', p_get_instructions($footerContent), $info);
-            if ($footerHtml !== '') {
-                $renderer->doc .= '<div class="catmenu-footer">' . $footerHtml . '</div>';
-            }
-        }
-
         return true;
     }
 

@@ -370,6 +370,7 @@ function catmenu_generateSectionMenu(conf, menuData, parentElement, menuContaine
         const enabledItems = new Set(
             (JSINFO?.plugins?.catmenu?.context_menu_items) || ['newpage', 'reload', 'medias', 'pagesicon', 'url']
         );
+        const footerContentHtml = String(JSINFO?.plugins?.catmenu?.footer_content_html || '').trim();
         // Disponibilité du plugin pagesicon côté serveur
         const pagesiconAvailable = !!(JSINFO?.plugins?.catmenu?.pagesicon_available);
 
@@ -463,8 +464,15 @@ function catmenu_generateSectionMenu(conf, menuData, parentElement, menuContaine
                 hasActions = true;
             }
 
+            if (footerContentHtml) {
+                let footer = document.createElement('div');
+                footer.className = 'catmenu-footer';
+                footer.innerHTML = footerContentHtml;
+                contextMenu.appendChild(footer);
+            }
+
             // N'afficher le menu que s'il contient au moins une action
-            if (!hasActions) return;
+            if (!hasActions && !footerContentHtml) return;
 
             // Positionnement et affichage
             contextMenu.style.left    = event.clientX + 'px';

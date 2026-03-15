@@ -19,6 +19,36 @@ class action_plugin_catmenu_prosemirror extends \dokuwiki\Extension\ActionPlugin
         return $this->nsHelper;
     }
 
+    private function stripParagraphWrapper(string $html): string
+    {
+        $trimmed = trim($html);
+        if (preg_match('/^<p>(.*)<\/p>$/s', $trimmed, $matches)) {
+            return trim((string)$matches[1]);
+        }
+        return $trimmed;
+    }
+
+    private function renderFooterContentAsList(string $footerContent): string
+    {
+        $lines = preg_split('/\R/', $footerContent) ?: [];
+        $items = [];
+
+        foreach ($lines as $line) {
+            $line = trim((string)$line);
+            if ($line === '') continue;
+
+            $lineHtml = p_render('xhtml', p_get_instructions($line), $info);
+            $lineHtml = $this->stripParagraphWrapper((string)$lineHtml);
+            if ($lineHtml === '') continue;
+
+            $items[] = '<li class="button">' . $lineHtml . '</li>';
+        }
+
+        if (!$items) return '';
+
+        return '<ul>' . implode('', $items) . '</ul>';
+    }
+
     public function register(Doku_Event_Handler $controller)
     {
         $controller->register_hook('DOKUWIKI_STARTED',       'AFTER',  $this, 'addJsInfo');
@@ -97,6 +127,14 @@ class action_plugin_catmenu_prosemirror extends \dokuwiki\Extension\ActionPlugin
         $JSINFO['plugins']['catmenu']['context_menu_items'] = array_values(
             array_filter(array_map('trim', explode(',', $rawItems)))
         );
+
+        $footerContent = trim((string)$this->getConf('footer_content'));
+        if ($footerContent !== '') {
+            $footerHtml = $this->renderFooterContentAsList($footerContent);
+            if ($footerHtml !== '') {
+                $JSINFO['plugins']['catmenu']['footer_content_html'] = $footerHtml;
+            }
+        }
 
         $pagesiconHelper = plugin_load('helper', 'pagesicon');
         $JSINFO['plugins']['catmenu']['pagesicon_available'] = (bool)$pagesiconHelper;

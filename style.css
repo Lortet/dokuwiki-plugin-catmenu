@@ -116,6 +116,8 @@
 }
 #catmenu_contextMenu .button {
   display: block;
+  background: none;
+  border: 0;
   color: inherit;
   cursor: pointer;
   padding: 2px 0;
@@ -155,8 +157,15 @@
   margin-top: 8px;
   padding-top: 6px;
   border-top: 1px solid #ccc;
-  font-size: 10px;
   color: #555;
+}
+.catmenu-footer ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+.catmenu-footer li {
+  margin: 3px 0;
 }
 .catmenu-footer p:first-child { margin-top: 0; }
 .catmenu-footer p:last-child  { margin-bottom: 0; }
