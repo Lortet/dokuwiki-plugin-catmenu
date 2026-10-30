@@ -14,7 +14,7 @@ class action_plugin_catmenu_buttons extends DokuWiki_Action_Plugin
         $event->data[] = [
             'type' => 'insert',
             'title' => 'CatMenu',
-            'icon' => '../../plugins/catmenu/images/default.png',
+            'icon' => '../../plugins/catmenu/images/default.svg',
             'insert' => '{{catmenu>.}}'
         ];
     }
