@@ -74,11 +74,17 @@ class syntax_plugin_catmenu_catmenu extends SyntaxPlugin {
             $renderer->doc .= '<div>' . hsc($this->getLang('namespace_not_found')) . '</div>';
             return true;
         }
+        $jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+        $pagesJson = json_encode($pages, $jsonFlags);
+        $configJson = json_encode([
+            'userewrite' => (string)$conf['userewrite'],
+            'start'      => (string)$conf['start'],
+        ], $jsonFlags);
 
         $renderer->doc .= '<div id="catmenu_' . $random . '" class="catmenu" style=""></div>';
         $renderer->doc .= "<script>
-            let catmenuconf_" . $random . " = { userewrite: '" . $conf['userewrite'] . "', start: '" . $conf['start'] . "' };
-            let catmenuobj_" . $random . " = JSON.parse(`" . htmlspecialchars_decode(json_encode($pages)) . "`);
+            let catmenuconf_" . $random . " = " . $configJson . ";
+            let catmenuobj_" . $random . " = " . $pagesJson . ";
             (function initCatmenu_" . $random . "() {
                 const target = document.getElementById('catmenu_" . $random . "');
                 if (!target) return;
