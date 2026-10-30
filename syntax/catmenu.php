@@ -144,6 +144,10 @@ class syntax_plugin_catmenu_catmenu extends SyntaxPlugin {
             $childID        = cleanID($childPathInfo['filename']);
             $childNamespace = cleanID($namespace !== '' ? ($namespace . ':' . $childID) : $childID);
 
+            if ($this->shouldSkipId($childNamespace)) {
+                continue;
+            }
+
             $childHasExtension = isset($childPathInfo['extension']) && $childPathInfo['extension'] !== '';
             $isDirNamespace    = is_dir($nsHelper->namespaceDir($childNamespace));
             $isPageNamespace   = page_exists($childNamespace);
@@ -198,11 +202,6 @@ class syntax_plugin_catmenu_catmenu extends SyntaxPlugin {
             }
 
             if (!$isDirNamespace && $isPageNamespace) { // Page seule
-                $skipRegex = $this->resolveSkipRegex();
-                if (!empty($skipRegex) && preg_match($skipRegex, $childNamespace)) {
-                    continue;
-                }
-
                 $pageNamespaceInfo = $nsHelper->getPageNamespaceInfo("$namespace:$childID");
                 if ($nsHelper->isHomepage($childID, $pageNamespaceInfo['parentID'])) {
                     continue;
@@ -236,21 +235,23 @@ class syntax_plugin_catmenu_catmenu extends SyntaxPlugin {
         return $items;
     }
 
-    /**
-     * Résout la valeur effective de l'option skip_file.
-     *
-     * Si la valeur est le jeton spécial "@hidepages", retourne la regex de masquage
-     * de pages configurée globalement dans DokuWiki ($conf['hidepages']).
-     * Sinon, retourne la valeur brute telle quelle.
-     */
-    private function resolveSkipRegex(): string
+    /** Check the configured skip pattern against a page or namespace ID. */
+    private function shouldSkipId(string $id): bool
     {
         global $conf;
-        $raw = (string)$this->getConf('skip_file');
-        if (trim($raw) === '@hidepages') {
-            return (string)($conf['hidepages'] ?? '');
+        $skipPattern = trim((string)$this->getConf('skip_file'));
+        if ($skipPattern === '') return false;
+
+        if ($skipPattern === '@hidepages') {
+            $hidePattern = (string)($conf['hidepages'] ?? '');
+            if ($hidePattern === '') return false;
+
+            // Match DokuWiki's hidepages convention: regex without delimiters
+            // against a colon-prefixed page ID.
+            return @preg_match('/' . $hidePattern . '/ui', ':' . cleanID($id)) === 1;
         }
-        return $raw;
+
+        return @preg_match($skipPattern, $id) === 1;
     }
 
     /**
