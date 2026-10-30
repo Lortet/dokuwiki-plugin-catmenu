@@ -1,6 +1,7 @@
 <?php
 
 $lang['namespace_not_found'] = "Le menu ne peut pas s'afficher (namespace introuvable).";
+$lang['context_menu_items_search'] = 'Rechercher dans ce dossier';
 $lang['js']['toolbar_button'] = 'CatMenu';
 $lang['js']['toolbar_popup_title'] = 'CatMenu';
 $lang['js']['toolbar_insert'] = 'Inserer';

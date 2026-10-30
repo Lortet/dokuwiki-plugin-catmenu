@@ -79,6 +79,8 @@ class syntax_plugin_catmenu_catmenu extends SyntaxPlugin {
         $configJson = json_encode([
             'userewrite' => (string)$conf['userewrite'],
             'start'      => (string)$conf['start'],
+            'searchUrl'  => wl($ID, ['do' => 'search']),
+            'searchLabel' => $this->getLang('context_menu_items_search'),
         ], $jsonFlags);
 
         $renderer->doc .= '<div id="catmenu_' . $random . '" class="catmenu" style=""></div>';

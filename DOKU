@@ -50,7 +50,7 @@ Exemples :
 | skip_file | Regex pour ignorer des IDs de page. Accepte aussi ''@hidepages'' pour réutiliser le paramètre ''hidepages'' de DokuWiki. | '''' |
 | skip_page_without_title | Ignorer les pages sans titre H1. | ''true'' |
 | show_in_editor_menu | Afficher le bouton d'insertion dans l'éditeur. | ''true'' |
-| context_menu_items | Actions disponibles dans le menu contextuel (cases à cocher). | toutes activées |
+| context_menu_items | Actions disponibles dans le menu contextuel (cases à cocher), dont « Rechercher dans ce dossier ». | toutes activées |
 | footer_content | DokuCode multiligne injecté à la fin du menu contextuel (clic droit). | '''' |
 
 ===== Compatibilité =====

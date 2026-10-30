@@ -1,5 +1,6 @@
 <?php
 
+$lang['context_menu_items_search'] = 'Buscar en esta carpeta';
 $lang['namespace_not_found'] = 'No se puede mostrar el menú (espacio de nombres no encontrado).';
 $lang['js']['toolbar_button']         = 'CatMenu';
 $lang['js']['toolbar_popup_title']    = 'CatMenu';

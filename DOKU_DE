@@ -50,7 +50,7 @@ Beispiele:
 | skip_file | Regulärer Ausdruck zum Ignorieren von Seiten-IDs. Akzeptiert auch ''@hidepages'', um die DokuWiki-Einstellung ''hidepages'' zu übernehmen. | '''' |
 | skip_page_without_title | Seiten ohne H1-Titel ausblenden. | ''true'' |
 | show_in_editor_menu | Einfüge-Schaltfläche im Editor anzeigen. | ''true'' |
-| context_menu_items | Aktionen im Kontextmenü (Kontrollkästchen). | alle aktiviert |
+| context_menu_items | Aktionen im Kontextmenü (Kontrollkästchen), einschließlich „Diesen Ordner durchsuchen“. | alle aktiviert |
 | footer_content | Mehrzeiliges DokuWiki-Markup, das am Ende des Kontextmenüs per Rechtsklick eingefügt wird. | '''' |
 
 ===== Kompatibilität =====

@@ -50,7 +50,7 @@ Ejemplos:
 | skip_file | Expresión regular para ignorar IDs de páginas. También acepta ''@hidepages'' para reutilizar el parámetro ''hidepages'' de DokuWiki. | '''' |
 | skip_page_without_title | Ignorar páginas sin título H1. | ''true'' |
 | show_in_editor_menu | Mostrar el botón de inserción en el editor. | ''true'' |
-| context_menu_items | Acciones disponibles en el menú contextual (casillas de verificación). | todas activadas |
+| context_menu_items | Acciones disponibles en el menú contextual (casillas), incluida «Buscar en esta carpeta». | todas activadas |
 | footer_content | Marcado DokuWiki multilínea insertado al final del menú contextual. | '''' |
 
 ===== Compatibilidad =====

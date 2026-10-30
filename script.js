@@ -368,7 +368,7 @@ function catmenu_generateSectionMenu(conf, menuData, parentElement, menuContaine
 
         // Actions activées dans la configuration du plugin (depuis JSINFO)
         const enabledItems = new Set(
-            (JSINFO?.plugins?.catmenu?.context_menu_items) || ['newpage', 'reload', 'medias', 'pagesicon', 'url']
+            (JSINFO?.plugins?.catmenu?.context_menu_items) || ['newpage', 'reload', 'medias', 'pagesicon', 'url', 'search']
         );
         const footerContentHtml = String(JSINFO?.plugins?.catmenu?.footer_content_html || '').trim();
         // Disponibilité du plugin pagesicon côté serveur
@@ -404,6 +404,18 @@ function catmenu_generateSectionMenu(conf, menuData, parentElement, menuContaine
             contextMenu.appendChild(titleEl);
 
             let hasActions = false;
+
+            if (enabledItems.has('search')) {
+                const searchUrl = new URL(conf.searchUrl, window.location.href);
+                searchUrl.searchParams.set('q', '@' + folderNs + ' ');
+
+                const searchButton = document.createElement('a');
+                searchButton.className = 'button';
+                searchButton.href = searchUrl.toString();
+                searchButton.textContent = '🔎 ' + conf.searchLabel;
+                contextMenu.appendChild(searchButton);
+                hasActions = true;
+            }
 
             // Créer une nouvelle page
             if (enabledItems.has('newpage') && permission >= AUTH_CREATE) {

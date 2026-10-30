@@ -35,7 +35,7 @@ In the Configuration Manager:
 - `skip_file`: regex used to ignore matching page IDs. Also accepts the special value `@hidepages` to automatically reuse DokuWiki's built-in `hidepages` setting.
 - `skip_page_without_title`: ignore pages without H1.
 - `show_in_editor_menu`: show the insert button in the editor.
-- `context_menu_items`: checkboxes to choose which actions appear in the right-click context menu. All enabled by default.
+- `context_menu_items`: checkboxes to choose which actions appear in the right-click context menu, including “Search this folder”. All enabled by default.
 - `footer_content`: multiline DokuWiki markup injected at the bottom of the right-click context menu (links, notes, etc.). Empty by default.
 
 ## Compatibility

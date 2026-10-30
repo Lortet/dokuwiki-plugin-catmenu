@@ -1,5 +1,6 @@
 <?php
 
+$lang['context_menu_items_search'] = 'Diesen Ordner durchsuchen';
 $lang['namespace_not_found'] = 'Das Menü kann nicht angezeigt werden (Namespace nicht gefunden).';
 $lang['js']['toolbar_button']         = 'CatMenu';
 $lang['js']['toolbar_popup_title']    = 'CatMenu';
