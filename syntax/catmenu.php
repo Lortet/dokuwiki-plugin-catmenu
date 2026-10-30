@@ -79,7 +79,7 @@ class syntax_plugin_catmenu_catmenu extends SyntaxPlugin {
         $configJson = json_encode([
             'userewrite' => (string)$conf['userewrite'],
             'start'      => (string)$conf['start'],
-            'searchUrl'  => wl($ID, ['do' => 'search']),
+            'searchUrl'  => wl($ID, ['do' => 'search'], false, '&'),
             'searchLabel' => $this->getLang('context_menu_items_search'),
         ], $jsonFlags);
 
