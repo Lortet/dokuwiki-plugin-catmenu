@@ -169,22 +169,22 @@ class syntax_plugin_catmenu_catmenu extends SyntaxPlugin {
                     $pageID = cleanID($namespace !== '' ? ($namespace . ':' . $childID) : $childID);
                 }
 
-                $permission = auth_quickaclcheck($pageID);
+                $permission = auth_quickaclcheck($pageID ?: $childNamespace);
                 if ($permission < AUTH_READ) {
                     continue;
                 }
 
                 $title = $pageID ? p_get_first_heading($pageID) : $pageID;
+                $pageHasTitle = !empty($title);
                 if (empty($title)) {
-                    if ($skipPageWithoutTitle || empty($pageID)) {
-                        continue;
-                    }
-                    $title = noNS($pageID);
+                    // Le réglage masque les pages sans titre, pas les dossiers
+                    // qui servent de conteneurs pour leurs sous-pages.
+                    $title = $pageID && !$skipPageWithoutTitle ? noNS($pageID) : noNS($childNamespace);
                 }
 
                 $items[] = [
                     'title'              => $title,
-                    'url'                => $pageID ? wl($pageID) : null,
+                    'url'                => $pageID && ($pageHasTitle || !$skipPageWithoutTitle) ? wl($pageID) : null,
                     'icon'               => $this->getPageImage($pageID),
                     'pagesiconUploadUrl' => $this->getPagesiconUploadUrl($pageID ?: $childNamespace),
                     'folderNamespace'    => $childNamespace,
