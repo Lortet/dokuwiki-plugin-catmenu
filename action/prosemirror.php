@@ -121,6 +121,7 @@ class action_plugin_catmenu_prosemirror extends \dokuwiki\Extension\ActionPlugin
         if (!isset($JSINFO['plugins'])) $JSINFO['plugins'] = [];
         if (!isset($JSINFO['plugins']['catmenu'])) $JSINFO['plugins']['catmenu'] = [];
         $JSINFO['plugins']['catmenu']['show_in_editor_menu'] = (bool)$this->getConf('show_in_editor_menu');
+        $JSINFO['plugins']['catmenu']['toolbar_icon_url'] = DOKU_BASE . 'lib/plugins/catmenu/images/default.svg';
 
         // Actions activées dans le menu contextuel (issues de la config multicheckbox)
         $rawItems = (string)$this->getConf('context_menu_items');

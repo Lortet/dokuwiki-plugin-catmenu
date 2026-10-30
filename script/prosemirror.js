@@ -70,25 +70,17 @@
         }
 
         function getFolderIconUrl() {
-            const svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%232f6fae' d='M10 4l2 2h8a2 2 0 0 1 2 2v2H2V6a2 2 0 0 1 2-2h6z'/><path fill='%233f88c8' d='M2 10h20v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8z'/></svg>";
-            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+            return JSINFO?.plugins?.catmenu?.toolbar_icon_url || '';
         }
 
         function getFolderMenuIcon() {
-            const ns = 'http://www.w3.org/2000/svg';
-            const svg = document.createElementNS(ns, 'svg');
-            svg.setAttribute('viewBox', '0 0 24 24');
-
-            const path1 = document.createElementNS(ns, 'path');
-            path1.setAttribute('d', 'M10 4l2 2h8a2 2 0 0 1 2 2v2H2V6a2 2 0 0 1 2-2h6z');
-            path1.setAttribute('fill', 'currentColor');
-            svg.appendChild(path1);
-
-            const path2 = document.createElementNS(ns, 'path');
-            path2.setAttribute('d', 'M2 10h20v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8z');
-            path2.setAttribute('fill', 'currentColor');
-            svg.appendChild(path2);
-            return svg;
+            const icon = document.createElement('img');
+            icon.src = getFolderIconUrl();
+            icon.alt = '';
+            icon.setAttribute('aria-hidden', 'true');
+            icon.style.width = '18px';
+            icon.style.height = '18px';
+            return icon;
         }
 
         function isLegacyCatmenuPluginNode(node) {
